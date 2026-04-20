@@ -1,10 +1,11 @@
 <script>
   import { enhance } from "$app/forms";
-  import axios from "axios";
 
   let { data, form } = $props();
   let companies = $derived(data.companies);
-
+  let currentPage = $derived(data.currentPage);
+  let nrOfPages = $derived(data.nrOfPages);
+  const pageSize = 4;
 </script>
 
 <h1 class="mt-3">Create Company</h1>
@@ -62,3 +63,23 @@
     {/each}
   </tbody>
 </table>
+
+<nav>
+  <ul class="pagination">
+    {#each Array(nrOfPages) as _, i}
+      <li class="page-item">
+        <a
+          class="page-link"
+          class:active={currentPage == i + 1}
+          href="/companies?pageNumber={i + 1}&pageSize={pageSize}"
+        >{i + 1}</a>
+      </li>
+    {/each}
+  </ul>
+</nav>
+
+<style>
+  .page-link:focus {
+    box-shadow: none;
+  }
+</style>

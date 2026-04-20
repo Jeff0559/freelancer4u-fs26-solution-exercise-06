@@ -4,24 +4,33 @@ import { error } from "@sveltejs/kit";
 import 'dotenv/config';
 const API_BASE_URL = process.env.API_BASE_URL; // defined in frontend/.env
 
-export async function load({ locals }) {
+export async function load({ url, locals }) {
     const jwt_token = locals.jwt_token;
 
     if (!jwt_token) {
         return {
-            companies: []
+            companies: [],
+            nrOfPages: 0,
+            currentPage: 1
         };
     }
 
     try {
+        const currentPage = parseInt(url.searchParams.get('pageNumber') || '1');
+        const pageSize = parseInt(url.searchParams.get('pageSize') || '4');
+
+        const query = `?pageSize=${pageSize}&pageNumber=${currentPage}`;
+
         const response = await axios({
             method: "get",
-            url: `${API_BASE_URL}/api/company`,
+            url: `${API_BASE_URL}/api/company` + query,
             headers: { Authorization: "Bearer " + jwt_token },
         });
 
         return {
-            companies: response.data
+            companies: response.data.content,
+            nrOfPages: response.data.totalPages || 0,
+            currentPage: currentPage
         };
 
     } catch (axiosError) {
@@ -54,8 +63,8 @@ export const actions = {
                 data: company,
             });
             return { success: true };
-        } catch (error) {
-            console.log('Error creating company:', error);
+        } catch (err) {
+            console.log('Error creating company:', err);
             return { success: false, error: 'Could not create company' };
         }
     }
