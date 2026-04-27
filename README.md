@@ -6,4 +6,8 @@ Es werden zwei Rollen unterschieden:
 
 ![Use Case Diagramm](doc/uc-diagram.drawio.svg)
 
-Stand: Übung 6
+Stand: Übung 10
+
+## Code Coverage
+![Coverage](.github/badges/jacoco.svg)
+![Branches](.github/badges/branches.svg)
