@@ -53,6 +53,18 @@ export const actions = {
         };
 
         try {
+            const disifyResponse = await axios.get(`https://disify.com/api/email/${company.email}`);
+            const mailInfo = disifyResponse.data;
+            console.log(`Disify validation for ${company.email}:`, mailInfo);
+            if (!mailInfo.format || mailInfo.disposable || !mailInfo.dns) {
+                return { success: false, error: `Email ${company.email} is not valid.` };
+            }
+        } catch (err) {
+            console.log('Disify API error:', err);
+            return { success: false, error: `Email ${company.email} is not valid.` };
+        }
+
+        try {
             await axios({
                 method: "post",
                 url: `${API_BASE_URL}/api/company`,
