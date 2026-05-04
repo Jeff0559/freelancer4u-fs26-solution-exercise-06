@@ -11,6 +11,7 @@ class Freelancer4uApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// Prüft, ob der Spring Application Context fehlerfrei startet
 	}
 
 }

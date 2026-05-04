@@ -18,6 +18,7 @@ import ch.zhaw.freelancer4u.model.Job;
 import ch.zhaw.freelancer4u.model.JobCreateDTO;
 import ch.zhaw.freelancer4u.model.JobType;
 import ch.zhaw.freelancer4u.repository.JobRepository;
+import ch.zhaw.freelancer4u.security.Roles;
 import ch.zhaw.freelancer4u.service.CompanyService;
 import ch.zhaw.freelancer4u.service.UserService;
 
@@ -36,7 +37,7 @@ public class JobController {
 
     @PostMapping("/job")
     public ResponseEntity<Job> createJob(@RequestBody JobCreateDTO cDTO) {
-        if (!userService.userHasRole("admin")) {
+        if (!userService.userHasRole(Roles.ADMIN)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         if (!companyService.companyExists(cDTO.getCompanyId())) {
@@ -79,7 +80,7 @@ public class JobController {
 
     @DeleteMapping("/job/{id}")
     public ResponseEntity<String> deleteJobById(@PathVariable String id) {
-        if (!userService.userHasRole("admin")) {
+        if (!userService.userHasRole(Roles.ADMIN)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         jobRepository.deleteById(id);

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ch.zhaw.freelancer4u.model.Company;
 import ch.zhaw.freelancer4u.model.CompanyCreateDTO;
 import ch.zhaw.freelancer4u.repository.CompanyRepository;
+import ch.zhaw.freelancer4u.security.Roles;
 import ch.zhaw.freelancer4u.service.UserService;
 
 @RestController
@@ -32,7 +33,7 @@ public class CompanyController {
 
     @PostMapping("/company")
     public ResponseEntity<Company> createCompany(@RequestBody CompanyCreateDTO fDTO) {
-        if (!userService.userHasRole("admin")) {
+        if (!userService.userHasRole(Roles.ADMIN)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         Company fDAO = new Company(fDTO.getName(), fDTO.getEmail());
@@ -44,7 +45,7 @@ public class CompanyController {
     public ResponseEntity<Page<Company>> getAllCompanies(
             @RequestParam(required = false, defaultValue = "1") Integer pageNumber,
             @RequestParam(required = false, defaultValue = "4") Integer pageSize) {
-        if (!userService.userHasRole("admin")) {
+        if (!userService.userHasRole(Roles.ADMIN)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         Page<Company> allCompanies = companyRepository.findAll(PageRequest.of(pageNumber - 1, pageSize));
@@ -53,7 +54,7 @@ public class CompanyController {
 
     @GetMapping("/company/{id}")
     public ResponseEntity<Company> getCompanyById(@PathVariable String id) {
-        if (!userService.userHasRole("admin")) {
+        if (!userService.userHasRole(Roles.ADMIN)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         Optional<Company> optCompany = companyRepository.findById(id);

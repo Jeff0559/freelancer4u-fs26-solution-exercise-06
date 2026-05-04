@@ -17,6 +17,7 @@ import ch.zhaw.freelancer4u.model.Job;
 import ch.zhaw.freelancer4u.model.JobStateAggregationDTO;
 import ch.zhaw.freelancer4u.model.JobStateChangeDTO;
 import ch.zhaw.freelancer4u.repository.JobRepository;
+import ch.zhaw.freelancer4u.security.Roles;
 import ch.zhaw.freelancer4u.service.JobService;
 import ch.zhaw.freelancer4u.service.UserService;
 
@@ -35,7 +36,7 @@ public class JobServiceController {
 
     @PutMapping("/assignjob")
     public ResponseEntity<Job> assignJob(@RequestBody JobStateChangeDTO changeS) {
-        if (!userService.userHasRole("admin")) {
+        if (!userService.userHasRole(Roles.ADMIN)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         String freelancerId = changeS.getFreelancerId();
@@ -49,7 +50,7 @@ public class JobServiceController {
 
     @PutMapping("/completejob")
     public ResponseEntity<Job> completeJob(@RequestBody JobStateChangeDTO changeS) {
-        if (!userService.userHasRole("admin")) {
+        if (!userService.userHasRole(Roles.ADMIN)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         String freelancerId = changeS.getFreelancerId();

@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Read(//Users/jeremiestettler/NextLevel/NextLevel/.vscode/**)",
-      "Bash(./mvnw test:*)"
+      "Bash(./mvnw test:*)",
+      "Bash(mvn compile *)"
     ]
   }
 }
