@@ -5,18 +5,25 @@ import ch.zhaw.freelancer4u.repository.CompanyRepository;
 import ch.zhaw.freelancer4u.security.TestSecurityConfig;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.Answers;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -26,6 +33,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class JobControllerTest {
 
+    private static final String TEST_TITLE = "Generated Test Title";
+
+    @MockitoBean(answers = Answers.RETURNS_DEEP_STUBS)
+    private OpenAiChatModel chatModel;
+
     @Autowired
     MockMvc mockMvc;
 
@@ -34,6 +46,14 @@ class JobControllerTest {
 
     static String jobId;
     static String companyId;
+
+    @BeforeEach
+    void setupMockAiResponse() {
+        when(chatModel.call(any(Prompt.class))
+            .getResult()
+            .getOutput()
+            .getText()).thenReturn(TEST_TITLE);
+    }
 
     @BeforeAll
     static void setupCompany(@Autowired CompanyRepository repo) {

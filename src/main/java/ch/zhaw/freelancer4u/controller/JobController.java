@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.openai.OpenAiChatModel;
+
 import ch.zhaw.freelancer4u.model.Job;
 import ch.zhaw.freelancer4u.model.JobCreateDTO;
 import ch.zhaw.freelancer4u.model.JobType;
@@ -35,6 +38,9 @@ public class JobController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    OpenAiChatModel chatModel;
+
     @PostMapping("/job")
     public ResponseEntity<Job> createJob(@RequestBody JobCreateDTO cDTO) {
         if (!userService.userHasRole(Roles.ADMIN)) {
@@ -43,7 +49,13 @@ public class JobController {
         if (!companyService.companyExists(cDTO.getCompanyId())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Job job = new Job(cDTO.getTitle(), cDTO.getDescription(), cDTO.getJobType(), cDTO.getEarnings(), cDTO.getCompanyId());
+        var generatedTitle = chatModel.call(new Prompt(
+            "Der Titel lautet bisher: '" + cDTO.getTitle()
+            + "'. Falls nötig, verbessere den Titel anhand der folgenden Beschreibung: "
+            + cDTO.getDescription() + ". Gib nur den neuen Titel zurück."
+        ));
+        var title = generatedTitle.getResult().getOutput().getText();
+        Job job = new Job(title, cDTO.getDescription(), cDTO.getJobType(), cDTO.getEarnings(), cDTO.getCompanyId());
         Job j = jobRepository.save(job);
         return new ResponseEntity<>(j, HttpStatus.CREATED);
     }
