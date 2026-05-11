@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.Answers;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ class JobControllerTest {
 
     @MockitoBean(answers = Answers.RETURNS_DEEP_STUBS)
     private OpenAiChatModel chatModel;
+
+    @MockitoBean(answers = Answers.RETURNS_DEEP_STUBS)
+    private ChatClient chatClient;
 
     @Autowired
     MockMvc mockMvc;

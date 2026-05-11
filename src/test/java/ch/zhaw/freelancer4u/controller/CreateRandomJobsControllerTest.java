@@ -1,6 +1,7 @@
 package ch.zhaw.freelancer4u.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -32,7 +33,8 @@ class CreateRandomJobsControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        Company testCompany = new Company("Test Co", "test@example.com");
+        Company testCompany = mock(Company.class);
+        when(testCompany.getId()).thenReturn("test-company-id");
         when(companyService.getAllCompanies()).thenReturn(Arrays.asList(testCompany));
         when(jobRepository.findAll()).thenReturn(Arrays.asList());
     }
