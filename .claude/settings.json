@@ -3,7 +3,9 @@
     "allow": [
       "Read(//Users/jeremiestettler/NextLevel/NextLevel/.vscode/**)",
       "Bash(./mvnw test:*)",
-      "Bash(mvn compile *)"
+      "Bash(mvn compile *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
